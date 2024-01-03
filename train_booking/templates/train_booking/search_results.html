@@ -1,0 +1,25 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <h2 class="mt-4">Search Results</h2>
+  {% if journeys %}
+    <ul class="list-group">
+      {% for journey in journeys %}
+        <li class="list-group-item">
+          <strong>Source:</strong> {{ journey.source_station }}<br>
+          <strong>Destination:</strong> {{ journey.destination_station }}<br>
+          <strong>Departure Time:</strong> {{ journey.departure_time }}<br>
+          <strong>Departure Date:</strong> {{ journey.departure_date }}<br>
+          <strong>Arrival Time:</strong> {{ journey.arrival_time }}<br>
+          <strong>Arrival Date:</strong> {{ journey.arrival_date }}
+
+          <!-- Add a button to redirect to the booking form -->
+          <a href="{% url 'create_booking' %}?journey_id={{ journey.id }}" class="btn btn-primary">Book Now</a>
+
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No journeys found for the specified search criteria.</p>
+  {% endif %}
+{% endblock %}

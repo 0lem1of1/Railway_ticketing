@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2>Update Train</h2>
+    <form method="post" action="{% url 'update_train' train.id %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Update Train</button>
+      <a href="{% url 'train_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

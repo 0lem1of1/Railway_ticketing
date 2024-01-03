@@ -1,0 +1,41 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2>Upcoming Journeys</h2>
+    {% if upcoming_bookings %}
+      <ul class="list-group">
+        {% for booking in upcoming_bookings %}
+          <li class="list-group-item">
+            <strong>Train:</strong> {{ booking.journey.train.name }}<br>
+            <strong>Departure Date:</strong> {{ booking.journey.departure_date }}<br>
+            <strong>Departure Time:</strong> {{ booking.journey.train.departure_time|time:"H:i" }}-{{ booking.journey.train.arrival_time|time:"H:i" }}<br>
+            <strong>Source:</strong> {{ booking.journey.train.source_station }}<br>
+            <strong>Destination:</strong> {{ booking.journey.train.destination_station }}<br>
+            <strong>Amount Paid:</strong> ${{ booking.amount_paid }}<br>
+            
+            <!-- Display information about passengers -->
+            <strong>Passengers:</strong>
+            <ul class="list-group">
+              {% for passenger in booking.passenger_set.all %}
+                <li class="list-group-item">{{ passenger.name }} - Age: {{ passenger.age }}{% if passenger.gender %}, Gender: {{ passenger.get_gender_display }}{% endif %}</li>
+                <a href="{% url 'edit_passenger' passenger_id=passenger.id %}" class="btn btn-sm btn-primary">Edit</a>
+              {% endfor %}
+            </ul>
+
+            <!-- Cancellation Option -->
+            <form method="post" action="{% url 'cancel_booking' booking.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger mt-2">Cancel Booking</button>
+              </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No upcoming bookings.</p>
+    {% endif %}
+
+    <!-- ... (similar structure for past bookings) -->
+
+  </div>
+{% endblock %}

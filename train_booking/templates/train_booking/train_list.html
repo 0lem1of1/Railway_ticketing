@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+{% if messages %}
+    <div class="container mt-4">
+      <ul class="messages list-unstyled">
+        {% for message in messages %}
+          <li class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <h2>List of Trains</h2>
+  <ul class="list-group">
+    {% for train in trains %}
+      <li class="list-group-item">
+        <div class="d-flex justify-content-between align-items-center">
+          <strong>{{ train.name }}</strong>
+          <div class="btn-group" role="group" aria-label="Train Actions">
+            <a href="{% url 'update_train' train.id %}" class="btn btn-sm btn-primary">Update</a>
+            <a href="{% url 'delete_train' train.id %}" class="btn btn-sm btn-danger">Delete</a>
+            <a href="{% url 'bookings' train.id %}" class="btn btn-sm btn-info">Bookings</a> {# Added Bookings button #}
+          </div>
+          <form method="post" action="{% url 'create_journey_for_next_month' %}">
+            {% csrf_token %}
+            <input type="hidden" name="train_id" value="{{ train.id }}">
+            <button type="submit" class="btn btn-sm btn-success">Create Journey</button>
+          </form>
+        </div>
+        <p class="mb-1">
+          Source: {{ train.source_station }} | Destination: {{ train.destination_station }}<br>
+          Departure Time: {{ train.departure_time }} | Arrival Time: {{ train.arrival_time }}<br>
+          Days of the Week: {{ train.days_of_the_week }} | Total Seats: {{ train.total_seats }} | Fare: {{ train.fare }}<br>
+          Date: {{ train.journey.departure_date }} to {{ train.journey.arrival_date }}
+        </p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

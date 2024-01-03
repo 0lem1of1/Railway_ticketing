@@ -1,0 +1,31 @@
+
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2>List of Trains</h2>
+    <ul class="list-group">
+      {% for journey in journeys %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ journey.name }}</strong> - {{ journey.departure_time }} - {{ journey.departure_date }}
+            <br>
+            <small>
+              <strong>Source:</strong> {{ journey.source_station }} |
+              <strong>Destination:</strong> {{ journey.destination_station }}
+            </small>
+          </div>
+          <div>
+            <a href="{% url 'bookings' journey.id %}?train_name={{ journey.name }}" class="btn btn-primary">View Bookings</a>
+          </div>
+
+          <form method="post" action="{% url 'cancel_journey' journey.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Cancel Journey</button>
+          </form>
+
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2>Delete Train</h2>
+    <p>Are you sure you want to delete the train '{{ train.name }}'? This action cannot be undone.</p>
+    <form method="post" action="{% url 'delete_train' train.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger" name="confirm_delete" value="true">Confirm Delete</button>
+      <a href="{% url 'train_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

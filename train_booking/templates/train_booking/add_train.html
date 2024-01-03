@@ -1,0 +1,15 @@
+
+{% extends 'main/base.html' %}
+
+{% block title %}Add Train{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Add Train</h2>
+    <form method="post" action="{% url 'add_train' %}" class="col-md-6">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+{% endblock %}

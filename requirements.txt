@@ -1,0 +1,7 @@
+Django==3.2.15
+celery>=5.2.2
+django_celery_beat
+importlib_metadata>=4.8.1,<5.0  
+celery[redis]>=5.2.2
+celery[beat]>=5.2.2
+django-allauth
