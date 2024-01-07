@@ -13,6 +13,9 @@
             <strong>Source:</strong> {{ booking.journey.train.source_station }}<br>
             <strong>Destination:</strong> {{ booking.journey.train.destination_station }}<br>
             <strong>Amount Paid:</strong> ${{ booking.amount_paid }}<br>
+            <strong>Route:</strong> {% for station in booking.journey.train.route.all %}{{ station.name }}{% if not forloop.last %}{% if forloop.counter == 2 %} ( {% endif %} -> {% endif %}{% if forloop.last %}  ) {% endif %}{% endfor %}<br>
+            The bracketed ones are the middle stations between souce and destination<br>
+            <strong>Seat Class:</strong> {{ booking.seat_class }}<br>
             
             <!-- Display information about passengers -->
             <strong>Passengers:</strong>
@@ -24,7 +27,7 @@
             </ul>
 
             <!-- Cancellation Option -->
-            <form method="post" action="{% url 'cancel_booking' booking.id %}">
+            <form method="post" action="{% url 'cancel_booking' booking.id %}" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger mt-2">Cancel Booking</button>
               </form>

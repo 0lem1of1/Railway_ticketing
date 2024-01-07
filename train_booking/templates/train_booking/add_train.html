@@ -1,4 +1,3 @@
-
 {% extends 'main/base.html' %}
 
 {% block title %}Add Train{% endblock %}
@@ -9,6 +8,12 @@
     <form method="post" action="{% url 'add_train' %}" class="col-md-6">
       {% csrf_token %}
       {{ form.as_p }}
+      
+      {{ form.stations.management_form }}
+      {% for station_form in form.stations %}
+        {{ station_form.as_table }}
+      {% endfor %}
+
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>

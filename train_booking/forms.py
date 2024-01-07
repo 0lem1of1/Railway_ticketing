@@ -1,6 +1,6 @@
 # main/forms.py
 from django import forms
-from .models import Train, Booking, Journey, Passenger
+from .models import Train, Booking, Journey, Passenger,Station
 from django.forms import inlineformset_factory
 
 
@@ -9,6 +9,10 @@ class JourneySearchForm(forms.Form):
     destination_station = forms.CharField(label='Destination Station', max_length=100)
     departure_date = forms.DateField(label='Departure Date', widget=forms.DateInput(attrs={'type': 'date'}))
 
+class StationForm(forms.ModelForm):
+    class Meta:
+        model = Station
+        fields = ['name']
 
 class AddTrainForm(forms.ModelForm):
     days_of_the_week = forms.MultipleChoiceField(
@@ -16,9 +20,14 @@ class AddTrainForm(forms.ModelForm):
         help_text="Select the days of the week for the train service.",
     )
 
+    route_input = forms.CharField(
+        label="Route",
+        help_text="Enter the route as a comma-separated list of stations.",
+    )
+
     class Meta:
         model = Train
-        fields = '__all__'
+        exclude = ['source_station', 'destination_station','route'] 
 
         widgets = {
             'departure_time': forms.TimeInput(attrs={'type': 'time'}),
@@ -31,7 +40,21 @@ class AddTrainForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['days_of_the_week'].choices = Train.DAYS_OF_WEEK_CHOICES
 
-    
+    def clean_route_input(self):
+        route_input = self.cleaned_data['route_input']
+
+        # Split the input into a list of stations
+        stations = [station.strip() for station in route_input.split(',')]
+
+        # Check if there are at least two stations
+        if len(stations) < 2:
+            raise forms.ValidationError("Route must have at least two stations.")
+
+        # Set the source and destination stations
+        self.cleaned_data['source_station'] = stations[0]
+        self.cleaned_data['destination_station'] = stations[-1]
+
+        return route_input
 
 class PassengerForm(forms.ModelForm):
     class Meta:

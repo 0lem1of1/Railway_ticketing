@@ -1,0 +1,48 @@
+{% extends "main/base.html" %}
+{% load i18n %}
+{% load allauth account socialaccount %}
+{% load bootstrap4 %}
+
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="mb-0">{% trans "Sign In" %}</h1>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">
+                            {% blocktrans %}If you have not created an account yet, then please
+                                <a href="{{ signup_url }}" class="font-weight-bold">sign up</a> first.{% endblocktrans %}
+                        </p>
+                        {% url 'account_login' as login_url %}
+                        <form method="post" action="{{ login_url }}">
+                            {% csrf_token %}
+                            {% bootstrap_form form %}
+                            {% if redirect_field_value %}
+                                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary btn-block mt-3">
+                                {% trans "Sign In" %}
+                            </button>
+                        </form>
+                        <hr>
+                        {# Social login buttons #}
+                        <div class="text-center">
+                            <p>{% trans "Or sign in using" %}:</p>
+                            <a href="{% provider_login_url 'google' %}" class="btn btn-social btn-social">
+                                <i class="fab fa-google"></i> {% trans "Sign in with Google" %}
+                            </a>
+                            {# Add more social login buttons as needed #}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

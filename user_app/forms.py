@@ -10,7 +10,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 class PassengerRegistrationForm(UserCreationForm):
     class Meta:
         model = PassegerUser
-        fields = ['username', 'password1', 'password2']
+        fields = ['username','email', 'password1', 'password2']
 
 class AdminRegistrationForm(UserCreationForm):
     class Meta:

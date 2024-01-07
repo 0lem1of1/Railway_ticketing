@@ -6,16 +6,19 @@
     <ul class="list-group">
       {% for journey in journeys %}
         <li class="list-group-item">
-          <strong>Source:</strong> {{ journey.source_station }}<br>
-          <strong>Destination:</strong> {{ journey.destination_station }}<br>
-          <strong>Departure Time:</strong> {{ journey.departure_time }}<br>
+          <strong>Source:</strong> {{ journey.train.source_station }}<br>
+          <strong>Destination:</strong> {{ journey.train.destination_station }}<br>
+          <strong>Departure Time:</strong> {{ journey.train.departure_time }}<br>
           <strong>Departure Date:</strong> {{ journey.departure_date }}<br>
-          <strong>Arrival Time:</strong> {{ journey.arrival_time }}<br>
-          <strong>Arrival Date:</strong> {{ journey.arrival_date }}
+          <strong>Arrival Time:</strong> {{ journey.train.arrival_time }}<br>
+          <strong>Arrival Date:</strong> {{ journey.arrival_date }}<br>
+          <strong>Route:</strong> {% for station in journey.train.route.all %}{{ station.name }}{% if not forloop.last %}{% if forloop.counter == 2 %} ( {% endif %} -> {% endif %}{% if forloop.last %}  ) {% endif %}{% endfor %}<br>
+          The bracketed ones are the middle stations between souce and destination
 
           <!-- Add a button to redirect to the booking form -->
-          <a href="{% url 'create_booking' %}?journey_id={{ journey.id }}" class="btn btn-primary">Book Now</a>
-
+          <div class="text-right"> <!-- Align content to the right -->
+            <a href="{% url 'create_booking' %}?journey_id={{ journey.id }}" class="btn btn-primary">Book Now</a>
+          </div>
         </li>
       {% endfor %}
     </ul>

@@ -13,6 +13,12 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import timedelta, datetime
 
+class Station(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class Train(models.Model):
     MONDAY = 'Mon'
     TUESDAY = 'Tue'
@@ -33,8 +39,10 @@ class Train(models.Model):
     ]
 
     name = models.CharField(max_length=100)
-    source_station = models.CharField(max_length=100)
-    destination_station = models.CharField(max_length=100)
+
+    source_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='source_station_trains')
+    destination_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='destination_station_trains')
+
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
     days_of_the_week = models.CharField(max_length=50, help_text="Comma-separated list of days", blank=True) #Change this to a ArrayField after switching to postgre database
@@ -42,15 +50,15 @@ class Train(models.Model):
     fare = models.DecimalField(max_digits=8, decimal_places=2)
     is_active = models.BooleanField(default=True)  # Added is_active field
 
+    route = models.ManyToManyField(Station)
+
 
 
     def __str__(self):
         return self.name
 
     def clean(self):
-        if self.departure_time >= self.arrival_time:
-            raise ValidationError("Departure time must be before arrival time.")
-
+        
         if self.total_seats < 0:
             raise ValidationError("Total seats must be a non-negative value.")
 
@@ -82,8 +90,10 @@ class Train(models.Model):
         current_date = datetime.today().date()
         existing_journeys = Journey.objects.filter(train=self)
 
+        # Calculate the time difference between arrival_time and departure_time
+        time_difference = self.arrival_time - self.departure_time
         for i in range(num_months * 30):
-            departure_date = current_date + timedelta(days=i)
+            departure_date = current_date + timedelta(days=time_difference.days, seconds=time_difference.seconds)
 
             
             # Check if the current day matches any day in the 'cleaned_days_list' field
@@ -91,6 +101,8 @@ class Train(models.Model):
                 # Check if a journey with the same attributes already exists
                 existing_journey = existing_journeys.filter(departure_date=departure_date)
                 if not existing_journey.exists():
+
+
                     arrival_date = departure_date + timedelta(days=1)
 
                     Journey.objects.create(
@@ -98,6 +110,24 @@ class Train(models.Model):
                         departure_date=departure_date,
                         arrival_date=arrival_date,
                     )
+    def set_route(self, route_list):
+        # Clear existing route stations
+        self.route.clear()
+
+        # Add source station as the first station in the route
+        self.route.add(self.source_station)
+        print(self.route.all())
+        # Add destination station as the last station in the route
+        self.route.add(self.destination_station)
+        print(self.route.all())
+        # Add other stations from the route_list
+        for station_name in route_list:
+            print()
+            station, created = Station.objects.get_or_create(name=station_name)
+            # Check if the station is not the source or destination before adding
+            if station != self.source_station and station != self.destination_station:
+                self.route.add(station)
+                print(self.route.all())
 
 class Journey(models.Model):
     departure_date = models.DateField()
@@ -111,10 +141,20 @@ class Journey(models.Model):
         verbose_name_plural = "Journeys"
 
 class Booking(models.Model):
+    SEAT_CLASS_CHOICES = [
+        ('general', 'General'),
+        ('sleeper', 'Sleeper'),
+        ('3a', '3A'),
+        ('2a', '2A'),
+        ('first_class', 'First Class'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount_paid = models.DecimalField(max_digits=8, decimal_places=2, null=True, default=None)
     is_cancelled = models.BooleanField(default=False)
     journey = models.ForeignKey(Journey, on_delete=models.CASCADE, null=False)
+    seat_class = models.CharField(max_length=20, choices=SEAT_CLASS_CHOICES)
+
 
     def __str__(self):
         return f"{self.user.username} - {self.journey.train.name} - {self.journey.departure_date}"

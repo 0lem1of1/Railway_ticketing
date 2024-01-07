@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-SITE_ID = 1
 
 # Application definition
 
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.account', 
     'allauth.socialaccount', 
     'allauth.socialaccount.providers.google', 
+    'bootstrap4',
 
 
 ]
@@ -59,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+
 ]
 
 ROOT_URLCONF = 'railway_ticketing.urls'
@@ -155,6 +157,8 @@ CELERY_BEAT_SCHEDULE = {
     # Add other periodic tasks as needed
 }
 
+SITE_ID = 1
+
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 LOGIN_REDIRECT_URL = '/'
@@ -166,3 +170,23 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'APP': {
+#             'client_id': '934300084653-fsetjl6rslssjlf9ehqqs1hhrnktm40a.apps.googleusercontent.com',
+#             'secret': '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',
+#             'key': '',
+#         }
+#     }
+# }
+
+LOGIN_URL = 'user_login'
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailjet.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'c99ad9af88196e718392548e376fa0c0'
+EMAIL_HOST_PASSWORD = '013b92d7d1477ce5577caf23cfd668ff'

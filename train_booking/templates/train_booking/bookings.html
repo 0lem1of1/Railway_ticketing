@@ -2,17 +2,19 @@
 
 {% block content %}
   <div class="container mt-4">
+    <!-- Add "Download Excel" Button -->
+    <a href="{% url 'export_bookings_excel' train_id=train.id %}" class="btn btn-primary mb-3">Download Excel</a>
     <h2>List of Bookings</h2>
     {% if bookings %}
       <div class="list-group">
         {% for booking in bookings %}
           <div class="list-group-item list-group-item-action">
             <h5 class="mb-1">
-              User: {{ booking.user.username }}
+              User: {{ booking.user.username }}<br>
               <small class="text-muted">Train: {{ booking.journey }}</small>
             </h5>
             <p class="mb-1">
-              Amount Paid: {{ booking.amount_paid }}
+              Amount Paid: {{ booking.amount_paid }} || Seat Class: {{ booking.seat_class }}
             </p>
             <p class="mb-1">
               <strong>Passengers:</strong>
@@ -20,7 +22,7 @@
             <ul class="list-group">
               {% for passenger in booking.passenger_set.all %}
                 <li class="list-group-item">
-                  {{ passenger.name }} - {{ passenger.gender }} - {{ passenger.age }} years old
+                  {{ passenger.name }} - {{ passenger.gender }} - {{ passenger.age }} 
                 </li>
               {% endfor %}
             </ul>

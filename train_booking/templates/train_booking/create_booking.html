@@ -10,6 +10,16 @@
     {{ passenger_formset.management_form }}
     
     <input type="hidden" name="journey_id" value="{{ journey_id }}">
+    <div class="form-group">
+      <label for="id_seat_class">Seat Class:</label>
+      <select name="seat_class" id="id_seat_class" class="form-control">
+        <option value="general">General</option>
+        <option value="sleeper">Sleeper</option>
+        <option value="3a">3A</option>
+        <option value="2a">2A</option>
+        <option value="first_class">First Class</option>
+      </select>
+    </div>
 
     {% for form in passenger_formset %}
     <div class="card mb-4">

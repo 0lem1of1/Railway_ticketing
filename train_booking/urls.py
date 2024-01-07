@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import search_journey,add_train,search_results,create_booking,success_page,wallet_interface,bookings,train_list,update_train,delete_train,create_journey_for_next_month,cancel_booking,edit_passenger
+from .views import search_journey,add_train,search_results,create_booking,success_page,wallet_interface,bookings,train_list,update_train,delete_train,cancel_booking,edit_passenger,export_bookings_excel
 
 urlpatterns = [
 
@@ -12,10 +12,11 @@ urlpatterns = [
     path('train_list/', train_list, name='train_list'),
     path('update_train/<int:train_id>/', update_train, name='update_train'),
     path('delete_train/<int:train_id>/', delete_train, name='delete_train'),    
-    path('bookings/<int:journey_id>/', bookings, name='bookings'),
+    path('bookings/<int:train_id>/', bookings, name='bookings'),
     path('cancel_booking/<int:booking_id>/', cancel_booking, name='cancel_booking'),
-    path('create-journey-for-next-month/', create_journey_for_next_month, name='create_journey_for_next_month'),
     path('edit_passenger/<int:passenger_id>/', edit_passenger, name='edit_passenger'),
+    path('export_bookings_excel/<int:train_id>/', export_bookings_excel, name='export_bookings_excel'),
+
 
 
 
