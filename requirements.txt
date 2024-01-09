@@ -7,3 +7,4 @@ celery[beat]>=5.2.2
 django-allauth
 django-bootstrap4
 openpyxl
+psycopg2

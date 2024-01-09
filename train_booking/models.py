@@ -87,23 +87,26 @@ class Train(models.Model):
         else:
             cleaned_days_list = []
 
-        current_date = datetime.today().date()
+        current_date = datetime.now().date()
         existing_journeys = Journey.objects.filter(train=self)
 
-        # Calculate the time difference between arrival_time and departure_time
-        time_difference = self.arrival_time - self.departure_time
-        for i in range(num_months * 30):
-            departure_date = current_date + timedelta(days=time_difference.days, seconds=time_difference.seconds)
+        # Convert departure_time and arrival_time to datetime objects
+        departure_datetime = datetime.combine(current_date, self.departure_time)
+        arrival_datetime = datetime.combine(current_date, self.arrival_time)
 
-            
+        # Calculate the time difference between arrival_time and departure_time
+        time_difference = arrival_datetime - departure_datetime
+
+        for i in range(num_months * 30):
+            # Update departure_date by adding the appropriate number of days
+            departure_date = current_date + timedelta(days=i)
+
             # Check if the current day matches any day in the 'cleaned_days_list' field
             if departure_date.strftime("%a") in cleaned_days_list:
                 # Check if a journey with the same attributes already exists
                 existing_journey = existing_journeys.filter(departure_date=departure_date)
                 if not existing_journey.exists():
-
-
-                    arrival_date = departure_date + timedelta(days=1)
+                    arrival_date = departure_date + timedelta(seconds = time_difference.seconds)
 
                     Journey.objects.create(
                         train=self,

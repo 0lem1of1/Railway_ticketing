@@ -89,10 +89,15 @@ WSGI_APPLICATION = 'railway_ticketing.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway_ticketing',
+        'USER': 'yahboi0lem',
+        'PASSWORD': '4HY@Nolemmyan',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
 
 
 # Password validation
